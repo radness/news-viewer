@@ -63,7 +63,8 @@ const NewsList = () => {
       {/* map 함수를 사용하기 전에 !articles를 조회하여 해당 값이 현재 null이 아닌지 검사해야한다!!! */}
       {/* 이 과정이 없으면 데이터가 없을 때 null에는 map 함수가 없기 때문에 렌더링 과정에서 오류가 발생한다. */}
       {articles.map(article => (
-        <NewsItem key={article.url} article={article} />
+        // <NewsItem key={article.url} article={article} />
+        <NewsItem article={sampleArticle} />
       ))}
     </NewsListBlock>
   );
