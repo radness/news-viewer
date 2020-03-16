@@ -1,5 +1,6 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
+import { NavLink } from 'react-router-dom';
 
 // 배열안에 name, text 객체를 만들어준다.
 // name은 실제 카데고리 값, text는 렌더링할 때 사용핳 한글 카테고리 값
@@ -49,7 +50,7 @@ const CartegoriesBlock = styled.div`
   }
 `;
 
-const Cartegory = styled.div`
+const Cartegory = styled(NavLink)`
   font-size: 1.125rem;
   cursor: pointer;
   white-space: pre;
@@ -61,16 +62,14 @@ const Cartegory = styled.div`
     color: #495057;
   }
 
-  ${props =>
-    props.active &&
-    css`
-      font-swight: 600;
-      border-bottom: 2px solid #22b8cf;
-      color: #22b8cf;
-      &:hover {
-        color: #3bc9db;
-      }
-    `}
+  &.active {
+    font-weight: 600;
+    border-bottom: 2px solid #22b8cf;
+    color: #22b8cf;
+    &:hover {
+      color: #3bc9db;
+    }
+  }
 
   & + & {
     margin-left: 1rem;
@@ -85,8 +84,11 @@ const Categories = ({ onSelect, category }) => {
       {categories.map(c => (
         <Cartegory
           key={c.name}
-          active={category === c.name}
-          onClick={() => onSelect(c.name)}
+          // active={category === c.name}
+          // onClick={() => onSelect(c.name)}
+          activeClassName="active"
+          exact={c.name === 'all'}
+          to={c.name === 'all' ? '/' : `/${c.name}`}
         >
           {c.text}
         </Cartegory>
