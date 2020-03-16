@@ -17,16 +17,16 @@ const NewsListBlock = styled.div`
   }
 `;
 
-const sampleArticle = {
-  title: '제목',
-  description: '내용',
-  url: 'https://google.com',
-  // urlToImage: 'https://via.placeholder.com/160',
-  urlToImage:
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcT9k30f1Gpv5uC4Sc7-6xvBKrni9JU6bmfmAo5GaczWoCg8yfH_',
-};
+// const sampleArticle = {
+//   title: '제목',
+//   description: '내용',
+//   url: 'https://google.com',
+//   // urlToImage: 'https://via.placeholder.com/160',
+//   urlToImage:
+//     'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcT9k30f1Gpv5uC4Sc7-6xvBKrni9JU6bmfmAo5GaczWoCg8yfH_',
+// };
 
-const NewsList = () => {
+const NewsList = ({ category }) => {
   const [articles, setArticles] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -35,8 +35,10 @@ const NewsList = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
+        // all이면 공백 all이 아니면 "&category=카테고리" 형태의 문자열을 만들어 요청할 때 주소에 포함
+        const query = category === 'all' ? '' : `&category=${category}`;
         const response = await axios.get(
-          'http://newsapi.org/v2/top-headlines?country=kr&apiKey=aa1040815b9d4e5dbd9e8bc1b058aa7a',
+          `https://newsapi.org/v2/top-headlines?country=kr${query}&apiKey=aa1040815b9d4e5dbd9e8bc1b058aa7a`,
         );
         setArticles(response.data.articles);
       } catch (e) {
@@ -45,7 +47,9 @@ const NewsList = () => {
       setLoading(false);
     };
     fetchData();
-  }, []);
+    // category값이 바뀔 때마다 뉴스를 새로 불러와야 하기 때문에
+    // ussEffect의 의존 배열(두번째 파라미터로 설정하는 배열)에 category를 넣어주어야 합니다.
+  }, [category]);
 
   // 대기 중
   if (loading) {
