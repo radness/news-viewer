@@ -9,7 +9,7 @@ const NewsListBlock = styled.div`
   padding-bottom: 3rem;
   width: 768px;
   margin: 0 auto;
-  margin-tip: 2rem;
+  margin-top: 2rem;
   @media screen and (max-width: 768px) {
     width: 100%;
     padding-left: 1rem;
@@ -21,7 +21,9 @@ const sampleArticle = {
   title: '제목',
   description: '내용',
   url: 'https://google.com',
-  urlToImage: 'https://via.placeholder.com/160',
+  // urlToImage: 'https://via.placeholder.com/160',
+  urlToImage:
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcT9k30f1Gpv5uC4Sc7-6xvBKrni9JU6bmfmAo5GaczWoCg8yfH_',
 };
 
 const NewsList = () => {
@@ -32,7 +34,6 @@ const NewsList = () => {
     // async를 사용하는 함수 따로 선언
     const fetchData = async () => {
       setLoading(true);
-
       try {
         const response = await axios.get(
           'http://newsapi.org/v2/top-headlines?country=kr&apiKey=aa1040815b9d4e5dbd9e8bc1b058aa7a',
@@ -41,7 +42,6 @@ const NewsList = () => {
       } catch (e) {
         console.log(e);
       }
-
       setLoading(false);
     };
     fetchData();
@@ -63,8 +63,8 @@ const NewsList = () => {
       {/* map 함수를 사용하기 전에 !articles를 조회하여 해당 값이 현재 null이 아닌지 검사해야한다!!! */}
       {/* 이 과정이 없으면 데이터가 없을 때 null에는 map 함수가 없기 때문에 렌더링 과정에서 오류가 발생한다. */}
       {articles.map(article => (
-        // <NewsItem key={article.url} article={article} />
-        <NewsItem article={sampleArticle} />
+        <NewsItem key={article.url} article={article} />
+        // <NewsItem article={sampleArticle} />
       ))}
     </NewsListBlock>
   );

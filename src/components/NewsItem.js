@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 const NewsItemBlock = styled.div`
-  display: flex, .thumbnail {
+  display: flex;
+  .thumbnail {
     margin-right: 1rem;
     img {
       display: block;
