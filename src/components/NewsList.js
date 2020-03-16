@@ -1,8 +1,9 @@
 // 해당 컴포넌트에서 API를 요청한다.
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import NewsItem from './NewsItem';
 import axios from 'axios';
+import usePromise from '../lib/usePromise';
 
 const NewsListBlock = styled.div`
   box-sizing: border-box;
@@ -27,48 +28,34 @@ const NewsListBlock = styled.div`
 // };
 
 const NewsList = ({ category }) => {
-  const [articles, setArticles] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    // async를 사용하는 함수 따로 선언
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        // all이면 공백 all이 아니면 "&category=카테고리" 형태의 문자열을 만들어 요청할 때 주소에 포함
-        const query = category === 'all' ? '' : `&category=${category}`;
-        const response = await axios.get(
-          `https://newsapi.org/v2/top-headlines?country=kr${query}&apiKey=aa1040815b9d4e5dbd9e8bc1b058aa7a`,
-        );
-        setArticles(response.data.articles);
-      } catch (e) {
-        console.log(e);
-      }
-      setLoading(false);
-    };
-    fetchData();
-    // category값이 바뀔 때마다 뉴스를 새로 불러와야 하기 때문에
-    // ussEffect의 의존 배열(두번째 파라미터로 설정하는 배열)에 category를 넣어주어야 합니다.
+  const [loading, response, error] = usePromise(() => {
+    const query = category === 'all' ? '' : `&category=${category}`;
+    return axios.get(
+      `https://newsapi.org/v2/top-headlines?country=kr${query}&apiKey=aa1040815b9d4e5dbd9e8bc1b058aa7a`,
+    );
   }, [category]);
 
   // 대기 중
   if (loading) {
     return <NewsListBlock>Loading...</NewsListBlock>;
   }
-  // article 값이 설정되지 않았을 때
-  if (!articles) {
+  // response 값이 설정되지 않았을 때
+  if (!response) {
     return null;
   }
 
-  // articles 값이 유효할 때
+  // error가 발생했을 때
+  if (error) {
+    return <NewsListBlock>Error...</NewsListBlock>;
+  }
+
+  // response 값이 유효할 때
+  const { articles } = response.data;
+
   return (
     <NewsListBlock>
-      {/* 데이터를 불러와서 뉴스 데이터 배열을 map 함수를 사용하여 컴포넌트 배열로 변환할 때 신경써야하는 것. */}
-      {/* map 함수를 사용하기 전에 !articles를 조회하여 해당 값이 현재 null이 아닌지 검사해야한다!!! */}
-      {/* 이 과정이 없으면 데이터가 없을 때 null에는 map 함수가 없기 때문에 렌더링 과정에서 오류가 발생한다. */}
       {articles.map(article => (
         <NewsItem key={article.url} article={article} />
-        // <NewsItem article={sampleArticle} />
       ))}
     </NewsListBlock>
   );
